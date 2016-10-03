@@ -233,7 +233,7 @@ class FloatObject(decimal.Decimal, PdfObject):
 
     def __repr__(self):
         if self == self.to_integral():
-            return str(self.quantize(decimal.Decimal(1)))
+            return str(self.quantize(decimal.Decimal(1), context=decimal.ExtendedContext))
         else:
             # Standard formatting adds useless extraneous zeros.
             o = "%.5f" % self
@@ -360,7 +360,7 @@ def readStringFromStream(stream):
                 tok = b_("/")
             elif tok == b_("\\"):
                 tok = b_("\\")
-            elif tok in (b_(" "), b_("/"), b_("%"), b_("<"), b_(">"), b_("["), 
+            elif tok in (b_(" "), b_("/"), b_("%"), b_("<"), b_(">"), b_("["),
                     b_("]"), b_("#"),  b_("_"), b_("&"), b_('$')):
                 # odd/unnessecary escape sequences we have encountered
                 tok = b_(tok)
@@ -478,7 +478,7 @@ class NameObject(str, PdfObject):
         name = stream.read(1)
         if name != NameObject.surfix:
             raise utils.PdfReadError("name read error")
-        name += utils.readUntilRegex(stream, NameObject.delimiterPattern, 
+        name += utils.readUntilRegex(stream, NameObject.delimiterPattern,
             ignore_eof=True)
         if debug: print(name)
         try:
